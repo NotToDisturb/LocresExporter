@@ -10,7 +10,7 @@ The script will run QuickBMS alognside the UnrealTournament4 BMS script to extra
 5. Fill out the requested paths in `locres_config.json`
 6. Run the script again
 7. The converted JSON will now be in `output_path`, enjoy!
-## Regarding `locres_config.json`
+### Regarding `locres_config.json`
 **quickbms_path**: path to the QuickBMS executable.
 
 **ut4_path**: path to the UnrealTournament4 script.
