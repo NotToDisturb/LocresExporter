@@ -1,5 +1,5 @@
 ## LocresCSV2JSON
-This script allows for the extraction of a Locres file in JSON format.
+This script allows for the extraction of a Locres file in JSON format. It uses Python 3.8.
 ### Basic functionality
 The script will run QuickBMS alognside the UnrealTournament4 BMS script to extract the Game.locres from the paks, it will then convert it to CSV using locres2csv and finally the resulting CSV file will be parsed to JSON.
 ### Instructions
