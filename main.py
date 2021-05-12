@@ -89,7 +89,7 @@ def load_config():
             exit()
     else:
         config_dict = {"quickbms_path": "", "ut4_path": "", "l2c_path": "",
-                       "working_path": "", "valorant_path": ""}
+                       "valorant_path": "", "working_path": "", "output_path": ""}
         with open(LOCRES_CONFIG, "xt") as paths_file:
             json.dump(config_dict, paths_file, indent=4)
             print("[ERROR] Created '" + LOCRES_CONFIG + "', fill out before running again\n")
