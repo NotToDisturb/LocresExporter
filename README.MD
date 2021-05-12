@@ -28,5 +28,5 @@ The `Game.locres` file will not be kept after the script ends.
 Use `{game_version}` to add the version this file was exported from.
 
 ### Credits
-Luigi Auriemma for creating QuickBMS [Go](https://aluigi.altervista.org/)
+Luigi Auriemma for creating QuickBMS [Go](https://aluigi.altervista.org/)  
 akintos for creating locres2csv [Go](https://zenhax.com/viewtopic.php?t=1022&start=40)
