@@ -10,6 +10,16 @@ The script will run QuickBMS alognside the UnrealTournament4 BMS script to extra
 5. Fill out the requested paths in `locres_config.json`
 6. Run the script again
 7. The converted JSON will now be in `output_path`, enjoy!
+### Using in your program
+Since LocresCSV2JSON is not yet a module, it is enough with copying `main.py` into a project and renaming it. The following function is enough to run the entire script:  
+```
+def locres_export(self):
+    exporter = LocresExporter()
+    exporter.export_locres()
+    exporter.locres_to_csv()
+    exporter.csv_to_json(exporter.config["output_path"], force_overwrite=True)
+```
+        
 ### Regarding `locres_config.json`
 **quickbms_path**: path to the QuickBMS executable.
 
