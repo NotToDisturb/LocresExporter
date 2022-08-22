@@ -4,8 +4,8 @@ This script allows for the extraction of a Locres file in JSON format. It uses P
 The script will run QuickBMS alognside the UnrealTournament4 BMS script to extract the Game.locres from the paks, it will then convert it to CSV using locres2csv and finally the resulting CSV file will be parsed to JSON.
 ### Instructions
 1. Download [QuickBMS](http://aluigi.altervista.org/papers/quickbms.zip)
-2. Download the [UnrealTournament4 script](http://aluigi.org/bms/unreal_tournament_4.bms)
-3. Download [locres2csv](https://drive.google.com/open?id=1-ftM3xAukoogkU5SmNKmsXYLA4b6omgJ)
+2. Download the [UnrealTournament4 (4.26+)](https://zenhax.com/download/file.php?id=12861) script
+3. Download [UnrealLocres](https://github.com/akintos/UnrealLocres)
 4. Run the script once, this will create a file called `locres_config.json`
 5. Fill out the requested paths in `locres_config.json`
 6. Run the script again
@@ -20,12 +20,12 @@ def locres_export(self):
     exporter.csv_to_json(exporter.config["output_path"], force_overwrite=True)
 ```
         
-### Regarding `locres_config.json`
+## Regarding `locres_config.json`
 **quickbms_path**: path to the QuickBMS executable.
 
 **ut4_path**: path to the UnrealTournament4 script.
 
-**l2c_path**: path to the locres2csv executable.
+**ul_path**: path to the UnrealLocres executable.
 
 **aes_path**: path to the AES key (a text file containing only the key).
 
@@ -39,4 +39,4 @@ Use `{game_version}` to add the version this file was exported from.
 
 ### Credits
 Luigi Auriemma for creating QuickBMS [Go](https://aluigi.altervista.org/)  
-akintos for creating locres2csv [Go](https://zenhax.com/viewtopic.php?t=1022&start=40)
+akintos for creating UnrealLocres [Go](https://zenhax.com/viewtopic.php?t=1022&start=40)

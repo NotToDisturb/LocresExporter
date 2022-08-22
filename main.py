@@ -32,8 +32,11 @@ class LocresExporter:
 
     def locres_to_csv(self):
         # Run locres2csv
-        locres_path = os.path.join(self.config["working_path"], "Game.locres")
-        parser_process = subprocess.Popen([self.config["l2c_path"], locres_path],
+        locres_path = os.path.join(self.config["working_path"], "ShooterGame", "Content", "Localization",
+                                   "Game", "en-US", "Game.locres")
+        csv_path = os.path.join(self.config["working_path"], "ShooterGame", "Content", "Localization",
+                                "Game", "en-US", "Game.csv")
+        parser_process = subprocess.Popen([self.config["ul_path"], "export", locres_path, "-o", csv_path],
                                           stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         parser_process.wait()
         os.remove(locres_path)
@@ -45,19 +48,34 @@ class LocresExporter:
 
     def csv_to_json(self, json_path, force_overwrite=False):
         # Parse the CSV file to JSON
-        csv_path = os.path.join(self.config["working_path"], "Game.csv")
+        csv_path = os.path.join(self.config["working_path"], "ShooterGame", "Content", "Localization",
+                                "Game", "en-US", "Game.csv")
         with open(csv_path, "rt", encoding="utf-8") as csv_locres:
             # Open the CSV file and create a temporary dictionary
             csv_read = csv.DictReader(csv_locres, delimiter=",")
             json_dict = {}
             for index, line in enumerate(csv_read):
                 # Begin recursion to place the line being read
-                add_child(json_dict, line["Key"].split("/"), line["Source"])
+                LocresExporter.__add_child(json_dict, line["key"].split("/"), line["source"])
 
             # Dump the temporary dictionary
             self.__begin_json_parse_dump(json_path, json_dict, force_overwrite)
         # Remove CSV file
         os.remove(csv_path)
+
+    @staticmethod
+    def __add_child(curr_dict, remaining_childs, child_contents):
+        # If this is the last key in the path to the contents
+        if len(remaining_childs) == 1:
+            curr_dict[remaining_childs[0]] = child_contents
+        # There are superkeys left to complete the path to the contents
+        else:
+            # Get or create the path currently being completed
+            next_dict = curr_dict.get(remaining_childs[0], {})
+            # Assign the reference to the next dictionary in case it did not exist
+            curr_dict[remaining_childs[0]] = next_dict
+            # Continue the recursion with one less remaining superkey
+            LocresExporter.__add_child(next_dict, remaining_childs[1:], child_contents)
 
     def __get_game_version(self):
         # Get the version of the game from which the Locres is being extracted
@@ -127,20 +145,6 @@ def load_config():
             json.dump(config_dict, paths_file, indent=4)
             print("[ERROR] Created '" + LOCRES_CONFIG + "', fill out before running again\n")
             exit()
-
-
-def add_child(curr_dict, remaining_childs, child_contents):
-    # If this is the last key in the path to the contents
-    if len(remaining_childs) == 1:
-        curr_dict[remaining_childs[0]] = child_contents
-    # There are superkeys left to complete the path to the contents
-    else:
-        # Get or create the path currently being completed
-        next_dict = curr_dict.get(remaining_childs[0], {})
-        # Assign the reference to the next dictionary in case it did not exist
-        curr_dict[remaining_childs[0]] = next_dict
-        # Continue the recursion with one less remaining superkey
-        add_child(next_dict, remaining_childs[1:], child_contents)
 
 
 if __name__ == "__main__":
