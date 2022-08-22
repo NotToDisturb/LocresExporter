@@ -1,4 +1,4 @@
-## LocresCSV2JSON
+## Locres2JSON
 This script allows for the extraction of a Locres file in JSON format. It uses Python 3.8.
 ### Basic functionality
 The script will run QuickBMS alognside the UnrealTournament4 BMS script to extract the Game.locres from the paks, it will then convert it to CSV using locres2csv and finally the resulting CSV file will be parsed to JSON.
@@ -11,7 +11,7 @@ The script will run QuickBMS alognside the UnrealTournament4 BMS script to extra
 6. Run the script again
 7. The converted JSON will now be in `output_path`, enjoy!
 ### Using in your program
-Since LocresCSV2JSON is not yet a module, it is enough with copying `main.py` into a project and renaming it. The following function is enough to run the entire script:  
+Since LocresJSON is not yet a module, it is enough with copying `main.py` into a project and renaming it. The following function is enough to run the entire script:  
 ```
 def locres_export(self):
     exporter = LocresExporter()
