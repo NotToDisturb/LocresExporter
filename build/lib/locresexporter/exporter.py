@@ -3,15 +3,19 @@ import csv
 import json
 import subprocess
 
-# Paths and filenames constantsx
+# Paths and filenames constants
+PACKAGE_ROOT = os.path.join(__file__, "..", "..")
 LOCRES_CONFIG = "locres_config.json"
-RELATIVE_LOCRES_PAK = os.path.normpath("\\live\\ShooterGame\\Content\\Paks\\en_US_Text-WindowsClient.pak")
-RELATIVE_VALORANT_EXE = os.path.normpath("\\live\\ShooterGame\\Binaries\\Win64\\VALORANT-Win64-Shipping.exe")
+VALORANT_PATH = "D:\\Games\\Riot Games\\VALORANT\\"
+RELATIVE_LOCRES_PAK = os.path.normpath("\\live\\ShooterGame\\Content\\Paks\\{pak_language}_Text-WindowsClient.pak")
 
 
 class LocresExporter:
     # Wrapper class for the exporting configuration
-    def __init__(self):
+    def __init__(self, game_path, pak_language, folder_language):
+        self.valorant_exe = game_path
+        self.pak_language = pak_language
+        self.folder_language = folder_language
         self.config = load_config()
         self.normalize_paths()
 
@@ -20,11 +24,15 @@ class LocresExporter:
         with open(self.config["aes_path"], "rt") as aes_file:
             return str.encode(aes_file.read())
 
-    def export_locres(self):
+    def apply_language_to_path(self, path):
+        return path.replace("{pak_language}", self.pak_language)\
+            .replace("{folder_language}", self.folder_language)
+
+    def export_locres(self, locres_pak_path):
+        locres_pak_path = self.apply_language_to_path(locres_pak_path)
         # Execute QuickBMS command, redirecting input to the pipe
-        locres_pak = self.config["valorant_path"] + RELATIVE_LOCRES_PAK
         exporter_process = subprocess.Popen([self.config["quickbms_path"], self.config["ut4_path"],
-                                             locres_pak, self.config["working_path"]],
+                                             locres_pak_path, self.config["working_path"]],
                                             stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         # Pass the AES key to the pipe
         exporter_process.communicate(self.get_aes_key())
@@ -33,9 +41,11 @@ class LocresExporter:
     def locres_to_csv(self):
         # Run locres2csv
         locres_path = os.path.join(self.config["working_path"], "ShooterGame", "Content", "Localization",
-                                   "Game", "en-US", "Game.locres")
+                                   "Game", "{folder_language}", "Game.locres")
+        locres_path = self.apply_language_to_path(locres_path)
         csv_path = os.path.join(self.config["working_path"], "ShooterGame", "Content", "Localization",
-                                "Game", "en-US", "Game.csv")
+                                "Game", "{folder_language}", "Game.csv")
+        csv_path = self.apply_language_to_path(csv_path)
         parser_process = subprocess.Popen([self.config["ul_path"], "export", locres_path, "-o", csv_path],
                                           stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         parser_process.wait()
@@ -49,17 +59,19 @@ class LocresExporter:
     def csv_to_json(self, json_path, force_overwrite=False):
         # Parse the CSV file to JSON
         csv_path = os.path.join(self.config["working_path"], "ShooterGame", "Content", "Localization",
-                                "Game", "en-US", "Game.csv")
+                                "Game", "{folder_language}", "Game.csv")
+        csv_path = self.apply_language_to_path(csv_path)
         with open(csv_path, "rt", encoding="utf-8") as csv_locres:
             # Open the CSV file and create a temporary dictionary
             csv_read = csv.DictReader(csv_locres, delimiter=",")
             json_dict = {}
             for index, line in enumerate(csv_read):
                 # Begin recursion to place the line being read
-                LocresExporter.__add_child(json_dict, line["key"].split("/"), line["source"])
+                LocresExporter.__add_child(json_dict, line["key"].replace("KAY/O", "KAYO").split("/"), line["source"])
 
             # Dump the temporary dictionary
             self.__begin_json_parse_dump(json_path, json_dict, force_overwrite)
+            self.__archive_json(json_dict)
         # Remove CSV file
         os.remove(csv_path)
 
@@ -77,9 +89,8 @@ class LocresExporter:
             # Continue the recursion with one less remaining superkey
             LocresExporter.__add_child(next_dict, remaining_childs[1:], child_contents)
 
-    def __get_game_version(self):
+    def get_game_version(self, game_path):
         # Get the version of the game from which the Locres is being extracted
-        game_path = self.config["valorant_path"] + RELATIVE_VALORANT_EXE
         # Read the executable as bytes
         with open(game_path, 'rb') as game_file:
             # Find the sequence of bytes and extract relevant part
@@ -87,17 +98,18 @@ class LocresExporter:
             # Transform bytes into a readable list of strings
             client_ver_list = list(filter(None, bytes.fromhex(client_ver_hex).decode('utf-16-le').split('\x00')))
             # Compose the version string
-            return client_ver_list[0] + '-' + client_ver_list[2] + '-' + client_ver_list[3].rsplit('.')[-1].lstrip('0')
+            return self.pak_language + '-' + client_ver_list[0] + '-' + client_ver_list[2] + '-' + \
+                   client_ver_list[3].rsplit('.')[-1].lstrip('0')
 
-    def apply_game_version_to_path(self, json_path):
+    def apply_game_version_to_path(self, game_path, json_path):
         # Replace {game_version} keyword with current version
-        game_version = self.__get_game_version()
+        game_version = self.get_game_version(game_path)
         return json_path.replace("{game_version}", game_version)
 
     @staticmethod
     def __begin_json_parse_dump(json_path, json_dict, force_overwrite):
         # Try to dump the temporary dictionary
-        # If the file exists check for ovewriting
+        # If the file exists check for overwriting
         if os.path.exists(json_path):
             # If file is not forcibly overwritten
             if not force_overwrite:
@@ -113,6 +125,12 @@ class LocresExporter:
         else:
             LocresExporter.__dump_json_parse(json_path, json_dict, "xt")
 
+    def __archive_json(self, json_dict):
+        json_paths = load_config(base_folder=PACKAGE_ROOT + "\\")
+        json_path = self.apply_game_version_to_path(self.valorant_exe, json_paths["output_path"])
+        write_type = "wt" if os.path.exists(json_path) else "xt"
+        LocresExporter.__dump_json_parse(json_path, json_dict, write_type)
+
     @staticmethod
     def __dump_json_parse(json_path, json_dict, write_type):
         # Dump the temporary dictionary
@@ -120,13 +138,13 @@ class LocresExporter:
             json.dump(json_dict, json_locres, indent=4)
 
 
-def load_config():
+def load_config(base_folder=""):
     # Load locres_config.json
     # If config exists
-    if os.path.exists(LOCRES_CONFIG):
+    if os.path.exists(base_folder + LOCRES_CONFIG):
         # Try to load JSON
         try:
-            with open(LOCRES_CONFIG, "rt") as config_file:
+            with open(base_folder + LOCRES_CONFIG, "rt") as config_file:
                 return json.load(config_file)
         # If the JSON cannot be parsed
         except ValueError:
@@ -138,10 +156,10 @@ def load_config():
     # If config does not exist
     else:
         # Create template dictionary
-        config_dict = {"quickbms_path": "", "ut4_path": "", "l2c_path": "",
+        config_dict = {"quickbms_path": "", "ut4_path": "", "ul_path": "",
                        "valorant_path": "", "working_path": "", "output_path": ""}
         # Dump template config JSON
-        with open(LOCRES_CONFIG, "xt") as paths_file:
+        with open(base_folder + LOCRES_CONFIG, "xt") as paths_file:
             json.dump(config_dict, paths_file, indent=4)
             print("[ERROR] Created '" + LOCRES_CONFIG + "', fill out before running again\n")
             exit()
@@ -149,10 +167,13 @@ def load_config():
 
 if __name__ == "__main__":
     # Base structure for exporting the JSON
-    exporter = LocresExporter()
+    exporter = LocresExporter(VALORANT_PATH +
+                              os.path.normpath("live\\ShooterGame\\Binaries\\Win64\\VALORANT-Win64-Shipping.exe"),
+                              "en_US", "en-US")
     print("[QuickBMS] Exporting Locres")
-    exporter.export_locres()
-    print("[locres2csv] Converting Locres to CSV")
+    locres_pak = VALORANT_PATH + RELATIVE_LOCRES_PAK
+    exporter.export_locres(locres_pak)
+    print("[UnrealLocres] Converting Locres to CSV")
     exporter.locres_to_csv()
     print("Converting CSV to JSON")
     exporter.csv_to_json(exporter.config["output_path"], force_overwrite=True)
