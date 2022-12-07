@@ -1,3 +1,5 @@
 /.idea/
 /locres_config.json
-/LocresCSV2JSON.iml
+/LocresExporter.iml
+/LocresExporter.egg-info/
+/build/
