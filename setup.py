@@ -1,9 +1,5 @@
-from setuptools import setup
+import setuptools
 
-setup(
-    name='LocresExporter',
-    version='1.0.0',
-    author='Disturbo',
-    packages=['locresexporter'],
-    description='Tool to generate JSON files for the localization resources of VALORANT',
-)
+
+if __name__ == "__main__":
+    setuptools.setup()
