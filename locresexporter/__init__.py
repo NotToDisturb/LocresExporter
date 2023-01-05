@@ -146,11 +146,10 @@ class LocresExporter:
             LocresExporter.__dump_json_parse(json_path, json_dict, "xt", sort_keys=sort_keys)
 
     def __archive_json(self, json_dict: dict):
-        if os.path.exists(PACKAGE_ROOT + "\\" + LOCRES_CONFIG):
-            json_paths = ConfigLoader(PACKAGE_ROOT + "\\" + LOCRES_CONFIG, validators)
-            json_path = self.__apply_game_version_to_path(self.__apply_language_to_path(json_paths["output_path"]))
-            write_type = "wt" if os.path.exists(json_path) else "xt"
-            LocresExporter.__dump_json_parse(json_path, json_dict, write_type)
+        json_paths = ConfigLoader(PACKAGE_ROOT + "\\" + LOCRES_CONFIG, validators)
+        json_path = self.__apply_game_version_to_path(self.__apply_language_to_path(json_paths["output_path"]))
+        write_type = "wt" if os.path.exists(json_path) else "xt"
+        LocresExporter.__dump_json_parse(json_path, json_dict, write_type)
 
     @staticmethod
     def __dump_json_parse(json_path: str, json_dict: dict, write_type: str, sort_keys: bool = False):
