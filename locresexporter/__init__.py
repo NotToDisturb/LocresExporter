@@ -9,7 +9,7 @@ from configloader import ConfigLoader
 from versionutils import get_game_version
 
 # Paths and filenames constants
-PACKAGE_ROOT = os.path.join(__file__, "..", "..")
+PACKAGE_ROOT = os.path.join(__file__, "..")
 LOCRES_CONFIG = "locres_config.json"
 validators = {
     "quickbms_path": ConfigLoader.validate_file,
@@ -164,7 +164,7 @@ class LocresExporter:
             json.dump(json_dict, json_locres, indent=4, ensure_ascii=False)
 
 
-if __name__ == "__main__":
+def __main():
     # Base structure for exporting the JSON
     exporter = LocresExporter("en_US", "en-US")
     print("[QuickBMS] Exporting Locres")
@@ -175,3 +175,6 @@ if __name__ == "__main__":
     print("Converting CSV to JSON")
     exporter.csv_to_json(sort_keys=True)
     print("Done")
+
+if __name__ == "__main__":
+    __main()
