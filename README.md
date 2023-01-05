@@ -90,7 +90,7 @@ LocresExporter uses a configuration file to know where the needed tools and othe
 |**ut4_old_path** |File           |Path to the UnrealTournament4 (4.26 upward) script.|
 |**ul_path**      |File           |Path to the UnrealLocres executable.|
 |**aes_path**:    |File           |Path to the AES key, a text file containing only the key in `0x<key>` format.|
-|**valorant_path**|Folder         |Path to your VALORANT installation folder. See more on [Example paths](#example-paths)|
+|**valorant_path**|Folder         |Path to your VALORANT installation folder. See more on [Example paths](#example-paths).|
 |**working_path** |Folder         |Path where the extraction of `Game.locres` and its parsing to CSV will take place. The `Game.locres` file will not be kept after the execution ends.|
 |**output_path**  |Not empty path |Path where the parsed JSON file will be placed. Check out the available [output path keywords](#output-path-keywords).|
 
@@ -149,5 +149,6 @@ It is also possible to use LocresExporter as a standalone script:
 1. Run the script using `python locresexporter.py`
 
 In the first execution, the config file is created and needs to be filled out.
-Check out [Installation](#installation) and [Config file](#config-file) for more details.<br>
+Check out [Installation](#installation) for the tools required and 
+[Config file](#config-file) for more details on how to fill out the config.<br>
 Running the script after filling out the config file will export the `en_US` `Game.locres`.
