@@ -1,5 +1,5 @@
 ## LocresExporter
-LocresExporer is a Python 3.8 script that extracts VALORANT's localized text (in other words, the `Game.locres` file) 
+LocresExporter is a Python 3.8 script that extracts VALORANT's localized text (in other words, the `Game.locres` file) 
 into a JSON format for  general use and better readability.
 ## Package usage
 #### Installation
