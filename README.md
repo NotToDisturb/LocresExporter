@@ -140,4 +140,14 @@ That configuration can be identical to the one in your project folder, but in or
 from other versions, it is recommended that the filename of the path in `output_path` be `Game-{pak_language}-{game_version}.json`
 
 ## Standalone usage
-TODO
+It is also possible to use LocresExporter as a standalone script:
+
+1. Download the [latest release](https://github.com/NotToDisturb/LocresExporter/releases/latest)
+1. Extract the zip file
+1. Open a console inside the extracted folder
+1. Install the required packages using `pip install -r requirements.txt`
+1. Run the script using `python locresexporter.py`
+
+In the first execution, the config file is created and needs to be filled out.
+Check out [Installation](#installation) and [Config file](#config-file) for more details.<br>
+Running the script after filling out the config file will export the `en_US` `Game.locres`.

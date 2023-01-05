@@ -3,3 +3,5 @@
 /LocresExporter.iml
 /LocresExporter.egg-info/
 /build/
+/standalone/build/
+/standalone/out/
