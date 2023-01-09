@@ -43,6 +43,8 @@ The following tools are also required:
 > [`locres_to_csv`](#locresexporter-instancelocres_to_csvcsv_path-str--none) and 
 > [`csv_to_json`](#locresexporter-instancecsv_to_json) in one go. 
 > Check their individual documentations for more information.
+> 
+> Returns a `dict` with the contents of `Game.locres`
 
 <br>
 
@@ -78,6 +80,8 @@ The following tools are also required:
 > - If true, `sort_keys` sorts the keys within each group in natural order.
 > - If true, `archive` also copies the JSON to an archival path. 
 >   See more in the [Archiving](#Archiving) section.
+> 
+> Returns a `dict` with the contents of `Game.locres`
 
 <br><br>
 #### Config file
@@ -128,7 +132,7 @@ exporter.export_locres(LOCRES_PAK_PATH)
 ```
 The first time this script is run, it will exit after generating `locres_config.json`.
 Subsequent runs will continue exiting until the [configuration file](#config-file) is filled out correctly.
-Once it is, the script will execute properly and the exported JSON will be in the output path (`output_path` in the config) 
+Once it is, the script will execute properly and the exported JSON will be in the output path (`output_path` in the config).
 
 #### Archiving
 LocresExporter features an archival feature that allows the user to automatically archive 

@@ -27,6 +27,8 @@ RELATIVE_GAME_EXE = "\\ShooterGame\\Binaries\\Win64\\VALORANT-Win64-Shipping.exe
 RELATIVE_LOCRES = "\\ShooterGame\\Content\\Localization\\Game\\{folder_language}\\Game.locres"
 RELATIVE_CSV = "\\ShooterGame\\Content\\Localization\\Game\\{folder_language}\\Game.csv"
 
+DEFAULT_LANGUAGE = "en-US"
+
 
 class LocresExporter:
     # Wrapper class for the exporting configuration
@@ -47,8 +49,8 @@ class LocresExporter:
 
     def __apply_game_version_to_path(self, path: str) -> str:
         # Replace {game_version} keyword with current version
-        game_version = get_game_version(self.valorant_exe)
-        return path.replace("{game_version}", game_version)
+        client_version = get_game_version(self.valorant_exe)
+        return path.replace("{game_version}", client_version["branch"] + "-" + client_version["version"])
 
     def export_locres(self, locres_pak_path: str, json_path: str = None, force_overwrite: bool = False,
                       sort_keys: bool = False, archive: bool = False) -> dict:
@@ -163,9 +165,17 @@ class LocresExporter:
             json.dump(json_dict, json_locres, indent=4, ensure_ascii=False)
 
 
+def __select_language():
+    language = input(f"[INPUT] Select language (default is '{DEFAULT_LANGUAGE}'):\n        ")
+    if language == "":
+        print(f"        Empty selection, using '{DEFAULT_LANGUAGE}'")
+        language = DEFAULT_LANGUAGE
+    return language.replace("-", "_"), language.replace("_", "-")
+
+
 def __main():
-    # Base structure for exporting the JSON
-    exporter = LocresExporter("en_US", "en-US")
+    pak_language, folder_language = __select_language()
+    exporter = LocresExporter(pak_language, folder_language)
     print("[QuickBMS] Exporting Locres")
     locres_pak = exporter.config["valorant_path"] + RELATIVE_LOCRES_PAK
     exporter.extract_locres(locres_pak)
