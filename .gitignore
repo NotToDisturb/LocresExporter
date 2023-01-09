@@ -1,7 +1,8 @@
 /.idea/
-/locresexporter/locres_config.json
-/LocresExporter.iml
+/venv/
 /LocresExporter.egg-info/
 /build/
 /standalone/build/
 /standalone/out/
+/locresexporter/locres_config.json
+/LocresExporter.iml

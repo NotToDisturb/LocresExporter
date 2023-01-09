@@ -155,4 +155,5 @@ It is also possible to use LocresExporter as a standalone script:
 In the first execution, the config file is created and needs to be filled out.
 Check out [Installation](#installation) for the tools required and 
 [Config file](#config-file) for more details on how to fill out the config.<br>
-Running the script after filling out the config file will export the `en_US` `Game.locres`.
+Running the script after filling out the config file will export `Game.locres` 
+file for the language selected.
