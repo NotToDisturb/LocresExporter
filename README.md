@@ -52,8 +52,8 @@ The following tools are also required:
 > 
 > Extracts `Game.locres` from the pak proved in `locres_pak_path` into the working path 
 > (`working_path` in the config) by running two QuickBMS (`quickbms_path` in the config) scripts:
-> 1. First the UnrealTournament4 script (4.26 upward) (`ut4_path` in the config)
-> 1. If no result is obtained, the UnrealTournament4 (4.25 downward) script (`ut4_old_path` in the config)
+> 1. First the UnrealTournament4 script (4.26 upward) (`ut4_path` in the config) is run.
+> 1. If no result is obtained, the UnrealTournament4 (4.25 downward) script (`ut4_old_path` in the config) is run.
 > 
 > `locres_pak_path` should be a path to a `{language}_Text-WindowsClient.pak` file
 
