@@ -143,10 +143,10 @@ class LocresExporter:
                 overwrite = "y"
             # If overwriting the file
             if overwrite.lower() == "y" or overwrite.lower() == "yes":
-                LocresExporter.__dump_json_parse(json_path, json_dict, "wt", sort_keys=sort_keys)
+                LocresExporter.__dump_json_parse(json_path, json_dict, "wt", self.encoding, sort_keys=sort_keys)
         # File does not exist
         else:
-            LocresExporter.__dump_json_parse(json_path, json_dict, "xt", sort_keys=sort_keys)
+            LocresExporter.__dump_json_parse(json_path, json_dict, "xt", self.encoding, sort_keys=sort_keys)
 
     def __archive_json(self, json_dict: dict):
         json_paths = ConfigLoader(PACKAGE_ROOT + "\\" + LOCRES_CONFIG, validators)
