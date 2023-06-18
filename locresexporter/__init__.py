@@ -32,11 +32,12 @@ DEFAULT_LANGUAGE = "en-US"
 
 class LocresExporter:
     # Wrapper class for the exporting configuration
-    def __init__(self, pak_language: str, folder_language: str, game_path: str = None):
+    def __init__(self, pak_language: str, folder_language: str, game_path: str = None, encoding="utf-8"):
         self.config = ConfigLoader(LOCRES_CONFIG, validators)
         self.pak_language = pak_language
         self.folder_language = folder_language
         self.valorant_exe = game_path if game_path else self.config["valorant_path"] + RELATIVE_GAME_EXE
+        self.encoding = encoding
 
     def __get_aes_key(self) -> bytes:
         # Read the AES key from the provided raw text file
@@ -151,12 +152,12 @@ class LocresExporter:
         json_paths = ConfigLoader(PACKAGE_ROOT + "\\" + LOCRES_CONFIG, validators)
         json_path = self.__apply_game_version_to_path(self.__apply_language_to_path(json_paths["output_path"]))
         write_type = "wt" if os.path.exists(json_path) else "xt"
-        LocresExporter.__dump_json_parse(json_path, json_dict, write_type)
+        LocresExporter.__dump_json_parse(json_path, json_dict, write_type, self.encoding)
 
     @staticmethod
-    def __dump_json_parse(json_path: str, json_dict: dict, write_type: str, sort_keys: bool = False):
+    def __dump_json_parse(json_path: str, json_dict: dict, write_type: str, encoding: str, sort_keys: bool = False):
         # Dump the temporary dictionary
-        with open(json_path, write_type, encoding="utf-8") as json_locres:
+        with open(json_path, write_type, encoding=encoding) as json_locres:
             if sort_keys:
                 for outer_key, values in json_dict.items():
                     convert = lambda text: int(text) if text.isdigit() else text.lower()
